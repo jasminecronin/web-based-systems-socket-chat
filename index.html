@@ -160,10 +160,27 @@
             var userlist;
             var username;
             
-            socket.on('joined', function(user){
-                 $('#header').append(user.name + ".");
-                 username = user.name;
-                 // usercolor = user.color;
+            socket.on('joined', function(users){
+                userlist = users;
+                if (document.cookie.split(';').filter((item) => item.trim().startsWith('username=')).length) {
+                    // console.log('The cookie "username" exists (ES6)')
+                    username = document.cookie.replace(/(?:(?:^|.*;\s*)username\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+                    for (var id in userlist) {
+                        if (username === userlist[id].name) {
+                            // generate new username
+                            username = "User" + Math.floor(Math.random() * 1000);
+                            document.cookie = "username=" + username;
+                            break;
+                        }
+                    }
+                    $('#header').append(username + ".");
+                    socket.emit('updateUsername', username);
+                } else {
+                    $('#header').append(user.name + ".");
+                    username = user.name;
+                    // usercolor = user.color;
+                    document.cookie = "username=" + username;
+                }
             });
 
             socket.on('populate', function(history){
@@ -191,6 +208,7 @@
                                 username = value;
                                 $('#header').empty();
                                 $('#header').append('You are ' + username + '.');
+                                document.cookie = "username=" + username;
                             }
                         }
                         $('#messages').append($('<li>').text("Username successfully updated."));
@@ -233,9 +251,13 @@
 
             socket.on('update', function(users) {
                 userlist = users;
+                var alreadyListed = [];
                 $('#userlist').empty();
                 for (var id in users) {
-                    $('#userlist').append($('<li>').text(users[id].name));
+                    if (!(alreadyListed.includes(users[id].name))) {
+                        $('#userlist').append($('<li>').text(users[id].name));
+                        alreadyListed.push(users[id].name);
+                    }
                 }
             });
 

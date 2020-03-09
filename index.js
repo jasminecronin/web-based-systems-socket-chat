@@ -19,7 +19,8 @@ io.on('connection', function(socket){
         color: "#c6ccd8"
     };
 
-    socket.emit('joined', users[socket.id]);
+    // socket.emit('joined', users[socket.id]);
+    socket.emit('joined', users);
     socket.emit('populate', history);
     updateUsers();
 
@@ -46,6 +47,11 @@ io.on('connection', function(socket){
 
     socket.on('updateUsername', function(name) {
         users[socket.id].name = name;
+        // for (var id in users) {
+        //     if (id !== socket.id && users[id].name === name) {
+        //         delete users[id];
+        //     }
+        // }
         updateUsers();
     });
 
