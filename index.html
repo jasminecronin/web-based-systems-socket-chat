@@ -176,8 +176,8 @@
                     $('#header').append(username + ".");
                     socket.emit('updateUsername', username);
                 } else {
-                    $('#header').append(user.name + ".");
-                    username = user.name;
+                    $('#header').append(users[socket.id].name + ".");
+                    username = users[socket.id].name;
                     // usercolor = user.color;
                     document.cookie = "username=" + username;
                 }
