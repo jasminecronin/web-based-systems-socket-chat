@@ -33,12 +33,10 @@
             display: flex;
             position: relative;
             overflow: auto;
-            /*height: 50vh;*/
             flex: 1;
         }
 
         #message-window {
-            /*height: 90vh;*/
             position: relative;
             overflow: auto;
             display: flex;
@@ -53,8 +51,6 @@
             position: absolute;
             bottom: 0;
             width: 100%;
-            /*overflow: auto;*/
-            /*max-height: 50vh;*/
             margin: 0 0 40px;
         }
 
@@ -68,21 +64,9 @@
             background: #394559;
         }
 
-        /*#messages li:nth-child(even) div {*/
-        /*    background: #394559;*/
-        /*    font-weight: normal;*/
-        /*    padding: 10px;*/
-        /*}*/
-
         #messages li:nth-child(odd) {
             background: #333D4F;
         }
-
-        /*#messages li:nth-child(odd) div {*/
-        /*    background: #333D4F;*/
-        /*    font-weight: normal;*/
-        /*    padding: 10px;*/
-        /*}*/
 
         .name, .msg {
             background: inherit;
@@ -151,9 +135,6 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
-        // const chat = document.getElementById("messages");
-        // var isScrolled = chat.scrollHeight - chat.clientHeight <= chat.scrollTop + 1;
-        // if (!isScrolled) chat.scrollTop = chat.scrollHeight - chat.clientHeight;
 
         $(function () {
             var socket = io();
@@ -163,7 +144,6 @@
             socket.on('joined', function(users){
                 userlist = users;
                 if (document.cookie.split(';').filter((item) => item.trim().startsWith('username=')).length) {
-                    // console.log('The cookie "username" exists (ES6)')
                     username = document.cookie.replace(/(?:(?:^|.*;\s*)username\s*\=\s*([^;]*).*$)|^.*$/, "$1");
                     for (var id in userlist) {
                         if (username === userlist[id].name) {
@@ -178,7 +158,6 @@
                 } else {
                     $('#header').append(users[socket.id].name + ".");
                     username = users[socket.id].name;
-                    // usercolor = user.color;
                     document.cookie = "username=" + username;
                 }
             });
@@ -196,9 +175,7 @@
                 if (str.substring(0, 1) === '/') {
                     var command = str.substring(1).split(' ')[0];
                     var value = str.substring(1).split(' ')[1];
-                    // console.log(str);
                     if (command === 'nick') {
-                        // console.log('change nickname');
                         $('#m').val('');
                         for (var id in userlist) {
                             if (value === userlist[id].name) {
@@ -214,7 +191,6 @@
                         $('#messages').append($('<li>').text("Username successfully updated."));
                         return false;
                     } else if (command === 'nickcolor') {
-                        // console.log('change color');
                         $('#m').val('');
                         if (value.length !== 6) {
                             $('#messages').append($('<li>').text("Sorry, that is not a valid command."));
@@ -222,18 +198,15 @@
                         }
                         const hexalpha = "0123456789aAbBcCdDeEfF";
                         for (var c in value) {
-                            // console.log(c);
                             if (!hexalpha.includes(value.charAt(c))) {
                                 $('#messages').append($('<li>').text("Sorry, that is not a valid command."));
                                 return false;
                             }
                         }
-                        // usercolor = "#" + value;
                         socket.emit('updateColor', value);
                         $('#messages').append($('<li>').text("User color successfully updated."));
                         return false;
                     } else {
-                        // console.log('invalid command');
                         $('#m').val('');
                         $('#messages').append($('<li>').text("Sorry, that is not a valid command."));
                         return false;
@@ -265,17 +238,15 @@
                 // if user is current user, make style bold
                 if (msg.name === username) {
                     $('#messages').append($('<li>').text(msg.timestamp));
-                    // console.log(msg.color);
                     $('#messages li:last').append($('<div class="name">').text(msg.name)
                         .css('color', msg.color)
-                        .css('font-weight', 'bold')); // + "\t" + msg.text));
+                        .css('font-weight', 'bold'));
                     $('#messages li:last').append($('<div class="msg">').text(msg.text)
                         .css('font-weight', 'bold'));
                 } else {
                     $('#messages').append($('<li>').text(msg.timestamp));
-                    // console.log(msg.color);
                     $('#messages li:last').append($('<div class="name">').text(msg.name)
-                        .css('color', msg.color)); // + "\t" + msg.text));
+                        .css('color', msg.color));
                     $('#messages li:last').append($('<div class="msg">').text(msg.text));
                 }
             }
